@@ -40,7 +40,7 @@
             </div>
             <div class="input">
                 <label for="input-subject">Subject</label>
-                <select id="input-subject">
+                <select id="input-subject" required>
                     <option value="" hidden>Select</option>
                     <option>FrontEnd</option>
                     <option>BackEnd</option>
@@ -49,12 +49,13 @@
             </div>
             <div class="input">
                 <label for="input-message">Your Message</label>
-                <textarea rows="5" cols="30" placeholder="Your message" id="input-message"></textarea>
+                <textarea rows="5" cols="30" placeholder="Your message" id="input-message" required></textarea>
             </div>
             <div class="input">
-                <button>Send</button>
+                <button onclick="sendMail()" type="button">Send</button>
             </div>
         </form>
     </section>
 </body>
 </html>
+<script src="main.js"></script>
