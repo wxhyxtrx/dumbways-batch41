@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Dumbways Day 2</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
+    <link rel='stylesheet' type='text/css' media='screen' href='project.css'>
+    <link rel="icon" href="https://www.filepicker.io/api/file/mWcP190oTCqiAo5VjrE8">
+    <script src="https://kit.fontawesome.com/65863407c7.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="nav-left">
+                <ul>
+                    <li><img class="logo" src="https://www.filepicker.io/api/file/mWcP190oTCqiAo5VjrE8"/></li>
+                    <li><a href="index.html" id="active">Home</a></li>
+                    <li><a href="project.html" id="">My Project</a></li>
+                </ul>
+            </div>
+            <div class="nav-right">
+                <a href="contact.html">Contact Me</a>
+            </div>
+        </nav>
+    </header>
+    <section>
+        <div class="form-container">
+            <form onsubmit="addProject()">
+                <h2>ADD MY PROJECT</h2>
+                <div>
+                    <label for="project-name">Project Name</label>
+                    <input type="text" id="project-name">
+                </div>
+                <div style="justify-content: center; display: flex;">
+                    <div style="flex: 50%">
+                        <label for="start-date">Start Date</label>
+                        <input type="date" id="start-date">
+                    </div>
+                    <div style="flex:50%;margin-left: 10px;">
+                        <label for="End-Date">End Date</label>
+                        <input type="date" id="end-date">
+                    </div>
+                </div>
+                <div>
+                    <label for="description">Description</label>
+                    <textarea id="description"></textarea>
+                </div>
+                <label>Technologies</label>
+                <table>
+                    <tr>
+                        <td>
+                            <input type="checkbox" id="node" value="Node.Js"><label for="node">Node Js</label>
+
+                        </td>
+                        <td>
+                            <input type="checkbox" id="typescript" value="Typescript"><label for="typescript">Typescript</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="checkbox" id="react" value="React Js"><label for="react">React Js</label>
+                        </td>
+                        <td>
+                            <input type="checkbox" id="next" value="Next Js"><label for="next">Next Js</label>
+                        </td>
+                    </tr>
+                </table>
+                <label for="description">Upload Image</label>
+                <div class="filebox">
+                    <label for="input-image">
+                        <P>Your File</P>
+                        <i class="far fa-folder"></i>
+                    </label>
+                    <input type="file" id="input-image">
+                </div>
+                <div>
+                    <input type="button" value="Post Project" onclick="addProject()">
+                </div>
+            </form>
+        </div>
+        <div class="project" id="conten-project">
+            <div class="view" id="view">
+                
+            </div>
+        </div>
+    </section>
+</body>
+<script src="project.js"></script>
+</html>

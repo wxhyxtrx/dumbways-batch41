@@ -1,0 +1,50 @@
+.content{
+    display: grid;
+    grid-template-columns: repeat(1,1fr);
+
+    /* background-color: red; */
+}
+.container h1{
+    width: 100%;
+    /* background-color: red; */
+
+}
+.container{
+    margin: 30px auto;
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    grid-column: 60% 40%;
+    gap: 30px;
+    font-family: sans-serif;
+    /* background-color:blue; */
+}
+.container img{
+    width:500px;
+    height: 100%;
+}
+
+.container label{
+    color: gray;
+    font-weight: bold;
+}
+.container i{
+    color: black;
+    margin: 10px;
+    font-size: 25px;
+}
+.teks{
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(1,1fr);
+    grid-column: 100%;
+    font-family: sans-serif;
+    /* background-color:blue; */
+    justify-content: center;
+    display: flex;
+}
+.teks p{
+    /* background-color: red; */
+    width:1000px;
+    text-align: justify;
+    line-height: 1.5;
+}
