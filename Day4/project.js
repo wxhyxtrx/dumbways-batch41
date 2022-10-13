@@ -68,23 +68,25 @@ function renderProject() {
 
     for (let index = 0; index < dataProject.length; index++) {
         document.getElementById("view").innerHTML += `
-    <a href="blog.html" target="blank">
-    <div class="blog-container">
-        <img src="${dataProject[index].image}">
-        <h3>${dataProject[index].namaProject}</h3>
-        <label>Durasi : ${dataProject[index].durasi}</label>
-        <p>${dataProject[index].deskripsi} </p>
-        <div class="toggle">
-            <a href="#"><i class="fa-brands fa-react"></i></i></i></a>
-            <a href="#"><i class="fa-brands fa-android"></i></a>
-            <a href="#"><i class="fa-brands fa-square-js"></i></a>
+        <div class="blog-container">
+        <a href="blog.html" target="blank">
+
+            <img src="${dataProject[index].image}">
+            <h3>${dataProject[index].namaProject}</h3>
+            <label>Durasi : ${dataProject[index].durasi}</label>
+            <p>${dataProject[index].deskripsi} </p>
+            <div class="toggle">
+                <a href="#"><i class="fa-brands fa-react"></i></i></i></a>
+                <a href="#"><i class="fa-brands fa-android"></i></a>
+                <a href="#"><i class="fa-brands fa-square-js"></i></a>
+            </div>
+            <div style="display: flex;justify-content:center ;">
+                <button>Edit</button>
+                <button>Hapus</button>
+            </div>
+        </a>
+
         </div>
-        <div style="display: flex;justify-content:center ;">
-            <button>Edit</button>
-            <button>Hapus</button>
-        </div>
-    </div>
-    </a>
         `
     }
 }
