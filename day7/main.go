@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/gorilla/mux"
 )
@@ -15,11 +16,14 @@ func main() {
 	route.PathPrefix("/public/").Handler(http.StripPrefix("/public/", http.FileServer(http.Dir("./public"))))
 
 	route.HandleFunc("/", home).Methods("Get")
+
 	route.HandleFunc("/Project", project).Methods("Get")
 	route.HandleFunc("/Project", addProject).Methods("POST")
+
 	route.HandleFunc("/Blog", blog).Methods("Get")
+	route.HandleFunc("/Detail/{id}", detailBlog).Methods("Get")
+
 	route.HandleFunc("/Contact", contact).Methods("Get")
-	route.HandleFunc("/Detail-Blog/{id}", detailBlog).Methods("Get")
 
 	fmt.Println("Sever Running on Port 5000")
 	http.ListenAndServe("localhost:5000", route)
@@ -72,8 +76,16 @@ func addProject(w http.ResponseWriter, r *http.Request) {
 	}
 
 	fmt.Println("Project :" + r.PostForm.Get("namaproject"))
+	fmt.Println("Start Date :" + r.PostForm.Get("startdate"))
+	fmt.Println("End Date :" + r.PostForm.Get("enddate"))
+	fmt.Println("Deskripsi :" + r.PostForm.Get("deskripsi"))
+	fmt.Println("React :" + r.PostForm.Get("react"))
+	fmt.Println("Node :" + r.PostForm.Get("node"))
+	fmt.Println("Next :" + r.PostForm.Get("next"))
+	fmt.Println("Typescript :" + r.PostForm.Get("typescript"))
+	fmt.Println("File :" + r.PostForm.Get("gambar"))
 
-	http.Redirect(w, r, "/blog", http.StatusMovedPermanently)
+	http.Redirect(w, r, "/Project", http.StatusMovedPermanently)
 }
 
 func blog(w http.ResponseWriter, r *http.Request) {
@@ -99,6 +111,14 @@ func detailBlog(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	id, _ := strconv.Atoi(mux.Vars(r)["id"])
+
+	data := map[string]interface{}{
+		"Title":   "Dumbways Day 7 Week 2",
+		"Content": " Typescript Lorem, ipsum dolor sit amet consectetur adipisicing elit. Similique vero nobis ipsa optio, itaque accusantium voluptates adipisci molestiae exercitationem dignissimos, deleniti omnis atque necessitatibus quasi maiores animi at reiciendis blanditiis. ",
+		"Id":      id,
+	}
+
 	w.WriteHeader(http.StatusOK)
-	tmpl.Execute(w, nil)
+	tmpl.Execute(w, data)
 }

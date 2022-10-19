@@ -3,7 +3,7 @@
 <head>
     <meta charset='utf-8'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-    <title>Dumbways | Day 6</title>
+    <title>Dumbways | Day 7</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <link rel="icon" href="https://www.filepicker.io/api/file/mWcP190oTCqiAo5VjrE8">
     <link rel='stylesheet' type='text/css' media='screen' href='https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css'>
@@ -34,7 +34,7 @@
                         <a class="nav-link " href="/Project">Project</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/Contact">Blog</a>
+                        <a class="nav-link active" href="/Blog">Blog</a>
                     </li>
                 </ul>
             </div>
@@ -46,9 +46,11 @@
         </div>
     </nav>
     <div class="container-fluid bg-white p-5">
-        <h3 class="text-center"> My Project | Bootcamp Week 2</h3>
+        <h3 class="text-center">{{.Title}}</h3>
         <div class="row mt-5">
-            disini blognya
+            Nomor ID : {{.Id}} <br/>
+            <br/>
+            Deskripsi : {{.Content}}
         </div>
     </div>
 </body>
