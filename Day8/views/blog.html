@@ -45,29 +45,33 @@
             </div>
         </div>
     </nav>
-    <div class="container-fluid bg-white p-5">
+    <div class="container-fluid ">
         <h3 class="text-center"> My Project | Bootcamp Week 2</h3>
-        <div class="row mt-5">
+        <div class="row mt-3 gap-2 d-flex justify-content-center">
             {{range $index, $data := .Blog}}
-            <div class="col-4">
+            <div class="col-3 p-1">
                 <a href="/Detail/{{$index}}" class="text-decoration-none text-black">
                 <div class="card">
-                    <img src="{{$data.Gambar}}" class="card-img-top">
+                    <img src="{{$data.Gambar}}" class="card-img-top" style="height: 200px;">
                     <div class="card-body">
                         <h5 class="card-title">
                             {{$data.Title}}
                         </h5>
-                        <label class="card-text text-secondary">Durasi : {{$data.StartDate}} - {{$data.EndDate}}</label>
+                        <label class="card-text text-secondary">Durasi : {{$data.StartDate}}</label>
                         <label class="card-text my-2" style="text-align: justify;">
                             {{$data.Deskripsi}}
                         </label>
                         <a href="#" class="btn text-black fs-5"><i class="fa fa-android"></i></a>
                         <a href="#" class="btn text-black fs-5"><i class="fa fa-windows"></i></a>
                         <a href="#" class="btn text-black fs-5"><i class="fa fa-github"></i></a>
-                        <div class="d-flex justify-content-start">
-                            <label class="align-self-center text-secondary col-sm-5">10 Menit yang lalu</label>
-                            <button type="button" class="btn btn-dark me-1 col-sm-3" > Edit</button>
-                            <button type="button" class="btn btn-dark  col-sm-4">Delete</button>
+                        <label class="align-self-center text-secondary">10 Menit yang lalu</label>
+                        <div class="row align-items-end mt-2">
+                            <div class="col d-flex justify-content-end gap-2">
+                                <button type="button" class="btn btn-dark" > Edit</button>
+                                <a href="/Delete/{{$index}}">
+                                    <button type="button" class="btn btn-dark" > Delete</button>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>

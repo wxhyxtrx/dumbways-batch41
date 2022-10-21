@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/gorilla/mux"
 )
@@ -22,6 +23,7 @@ func main() {
 
 	route.HandleFunc("/Blog", blog).Methods("Get")
 	route.HandleFunc("/Detail/{id}", detailBlog).Methods("Get")
+	route.HandleFunc("/Delete/{id}", deleteBlog).Methods("Get")
 
 	route.HandleFunc("/Contact", contact).Methods("Get")
 
@@ -133,16 +135,32 @@ func addProject(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 
-	fmt.Println("Project :" + r.PostForm.Get("namaproject"))
-	fmt.Println("Start Date :" + r.PostForm.Get("startdate"))
-	fmt.Println("End Date :" + r.PostForm.Get("enddate"))
-	fmt.Println("Deskripsi :" + r.PostForm.Get("deskripsi"))
-	fmt.Println("React :" + r.PostForm.Get("react"))
-	fmt.Println("Node :" + r.PostForm.Get("node"))
-	fmt.Println("Next :" + r.PostForm.Get("next"))
-	fmt.Println("Typescript :" + r.PostForm.Get("typescript"))
-	fmt.Println("File :" + r.PostForm.Get("gambar"))
+	var inputTitle = r.PostForm.Get("namaproject")
+	var inputStartdate = r.PostForm.Get("startdate")
+	var inputEnddate = r.PostForm.Get("enddate")
+	var inputDeskripsi = r.PostForm.Get("deskripsi")
+	var inputReact = r.PostForm.Get("react")
+	var inputNode = r.PostForm.Get("node")
+	var inputNext = r.PostForm.Get("next")
+	var inputTypescript = r.PostForm.Get("typescript")
+	var inputGambar = r.PostForm.Get("gambar")
+	var inputDurasi = time.Now().String()
+	var inputPenulis = "Dumbways Batch 41"
 
+	newBlog := ValueBlog{
+		Title:      inputTitle,
+		StartDate:  inputStartdate,
+		EndDate:    inputEnddate,
+		Deskripsi:  inputDeskripsi,
+		React:      inputReact,
+		Node:       inputNode,
+		Next:       inputNext,
+		Typescript: inputTypescript,
+		Gambar:     inputGambar,
+		Durasi:     inputDurasi,
+		Penulis:    inputPenulis,
+	}
+	Blog = append(Blog, newBlog)
 	http.Redirect(w, r, "/Project", http.StatusMovedPermanently)
 }
 
@@ -203,4 +221,13 @@ func detailBlog(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 	tmpl.Execute(w, data)
+}
+func deleteBlog(w http.ResponseWriter, r *http.Request) {
+	index, _ := strconv.Atoi(mux.Vars(r)["id"])
+	fmt.Println(index)
+
+	Blog = append(Blog[:index], Blog[index+1:]...)
+	fmt.Println(Blog)
+
+	http.Redirect(w, r, "/Blog", http.StatusFound)
 }
