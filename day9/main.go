@@ -45,6 +45,7 @@ type ValueBlog struct {
 	Format_startdate string
 	Format_enddate   string
 	Deskripsi        string
+	Teknologi        []string
 	Gambar           string
 	Penulis          string
 	Durasi           string
@@ -62,8 +63,38 @@ func home(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	query := "SELECT kd_project, nm_project, start_date, end_date, deskripsi, teknologi, gambar FROM project "
+	rows, _ := connection.Conn.Query(context.Background(), query)
+
+	// query := "SELECT kd_project, nm_project, start_date, end_date, deskripsi, teknologi, gambar FROM project"
+	// rows, _ := connection.Conn.Query(context.Background(), query)
+
+	var result []ValueBlog
+	fmt.Println(result)
+	for rows.Next() {
+		var each = ValueBlog{}
+		var err = rows.Scan(&each.Id, &each.Title, &each.start_date, &each.end_date, &each.Deskripsi, &each.Teknologi, &each.Gambar)
+		if err != nil {
+			fmt.Println(err.Error())
+			return
+		}
+		each.Penulis = "Siapa Aja Dah"
+		each.Durasi = "2 menit yang lalu"
+
+		each.Format_startdate = each.start_date.Format("2 January 2022")
+		each.Format_enddate = each.end_date.Format("2 January 2022")
+
+		result = append(result, each) //untuk memasukkan data yang ada di dalam tabel database ke dalam array
+
+	}
+	fmt.Println(result)
+
+	respData := map[string]interface{}{
+		"Project": result,
+	}
+
 	w.WriteHeader(http.StatusOK)
-	tmpl.Execute(w, nil)
+	tmpl.Execute(w, respData)
 }
 func page404(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
@@ -147,9 +178,8 @@ func blog(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Message: " + err.Error()))
 		return
 	}
-
 	//ini bagian database//
-	query := "SELECT kd_project, nm_project, start_date, end_date, deskripsi FROM project"
+	query := "SELECT kd_project, nm_project, start_date, end_date, deskripsi, teknologi, gambar FROM project"
 	rows, _ := connection.Conn.Query(context.Background(), query)
 
 	var result []ValueBlog //mendeklarasikan array dari ValueBlog
@@ -157,15 +187,16 @@ func blog(w http.ResponseWriter, r *http.Request) {
 	for rows.Next() {
 		var each = ValueBlog{}
 
-		var err = rows.Scan(&each.Id, &each.Title, &each.start_date, &each.end_date, &each.Deskripsi)
+		var err = rows.Scan(&each.Id, &each.Title, &each.start_date, &each.end_date, &each.Deskripsi, &each.Teknologi, &each.Gambar)
 
 		if err != nil {
 			fmt.Println(err.Error())
 			return
 		}
 		each.Penulis = "Penulisnya aku"
-		each.Gambar = "https://media.sproutsocial.com/uploads/2017/02/10x-featured-social-media-image-size.png"
+		// each.Gambar = "https://media.sproutsocial.com/uploads/2017/02/10x-featured-social-media-image-size.png"
 		each.Durasi = "1 menit yang lalu"
+
 		each.Format_startdate = each.start_date.Format("2 January 2006")
 		each.Format_enddate = each.end_date.Format("2 January 2006")
 
