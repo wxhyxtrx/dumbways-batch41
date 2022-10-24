@@ -66,11 +66,10 @@ func home(w http.ResponseWriter, r *http.Request) {
 	query := "SELECT kd_project, nm_project, start_date, end_date, deskripsi, teknologi, gambar FROM project "
 	rows, _ := connection.Conn.Query(context.Background(), query)
 
-	// query := "SELECT kd_project, nm_project, start_date, end_date, deskripsi, teknologi, gambar FROM project"
-	// rows, _ := connection.Conn.Query(context.Background(), query)
-
 	var result []ValueBlog
+
 	fmt.Println(result)
+
 	for rows.Next() {
 		var each = ValueBlog{}
 		var err = rows.Scan(&each.Id, &each.Title, &each.start_date, &each.end_date, &each.Deskripsi, &each.Teknologi, &each.Gambar)
@@ -81,8 +80,8 @@ func home(w http.ResponseWriter, r *http.Request) {
 		each.Penulis = "Siapa Aja Dah"
 		each.Durasi = "2 menit yang lalu"
 
-		each.Format_startdate = each.start_date.Format("2 January 2022")
-		each.Format_enddate = each.end_date.Format("2 January 2022")
+		each.Format_startdate = each.start_date.Format("2 January 2006")
+		each.Format_enddate = each.end_date.Format("2 January 2006")
 
 		result = append(result, each) //untuk memasukkan data yang ada di dalam tabel database ke dalam array
 
