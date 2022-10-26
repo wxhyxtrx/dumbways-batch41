@@ -46,64 +46,69 @@
         </div>
     </nav>
     <div class="container mt-5 mb-5 d-flex justify-content-center">
-        <form class="w-75 bg-white rounded shadow-lg p-4" method="POST" action="/Project">
-            <h4 class="text-center">Add Project</h4>
+        <form class="w-75 bg-white rounded shadow-lg p-4" method="POST" action="/Update-Blog/{{.DataEdit.Id}}">
+            <h4 class="text-center">Update Project</h4>
             <div class="mb-3">
                 <label for="name" class="form-label fw-semibold">Name Project</label>
-                <input type="text" class="form-control" id="name" placeholder="Android Project" name="namaproject">
+                <input type="text" class="form-control" id="name" placeholder="Android Project" name="namaproject" value="{{.DataEdit.Title}}">
             </div>
             <div class="row mb-3">
                 <div class="col">
                     <label for="name" class="form-label fw-semibold">Start Date</label>
-                    <input type="date" class="form-control" id="name" placeholder="Android Project" name="startdate">
+                    <input type="date" class="form-control" id="name" placeholder="Android Project" name="startdate" value="{{.DataEdit.Format_startdate}}">
                 </div>
                 <div class="col">
                     <label for="name" class="form-label fw-semibold">End Date</label>
-                    <input type="date" class="form-control" id="name" placeholder="Android Project" name="enddate">
+                    <input type="date" class="form-control" id="name" placeholder="Android Project" name="enddate" value="{{.DataEdit.Format_enddate}}">
                 </div>
             </div>
             <div class="mb-3">
                 <label for="exampleFormControlTextarea1" class="form-label fw-semibold">Description</label>
-                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="deskripsi"></textarea>
+                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="deskripsi" >{{.DataEdit.Deskripsi}}</textarea>
             </div>
-            <div class="mb-3">
-                <label class="form-label fw-semibold">Technology</label>
-                <div class="row row-cols-2">
-                    <div class="col">
-                        <input class="form-check-input" type="checkbox" value="react" name="react" id="react">
-                        <label class="form-check-label ms-3" for="react">
-                            React JS
-                        </label>
-                    </div>
-                    <div class="col">
-                        <input class="form-check-input" type="checkbox" value="node" name="node" id="node">
-                        <label class="form-check-label ms-3" for="node">
-                            Node JS
-                        </label>
-                    </div>
-                    <div class="col">
-                        <input class="form-check-input" type="checkbox" value="next" name="next" id="next">
-                        <label class="form-check-label ms-3" for="next">
-                            Next JS
-                        </label>
-                    </div>
-                    <div class="col">
-                        <input class="form-check-input" type="checkbox" value="typescript" name="typescript" id="ts">
-                        <label class="form-check-label ms-3" for="ts">
-                            Typescript
-                        </label>
-                    </div>
+            <div class="mb-3 row">
+                <label class="form-label fw-semibold col-sm-12">Technology</label>
+                <div class="col-6">
+                    {{if eq (index .DataEdit.Teknologi 0) "react"}}
+                    <input class="form-check-input" type="checkbox" value="react" name="react" id="react" checked>
+                    {{else}}
+                    <input class="form-check-input" type="checkbox" value="react" name="react" id="react">
+                    {{end}}
+                    <label class="form-check-label ms-3" for="react">React JS</label>
+                </div>
+                <div class="col-6">
+                    {{if eq (index .DataEdit.Teknologi 1) "node"}}
+                    <input class="form-check-input" type="checkbox" value="node" name="node" id="node" checked>
+                    {{else}}
+                    <input class="form-check-input" type="checkbox" value="node" name="node" id="node">
+                    {{end}}
+                    <label class="form-check-label ms-3" for="node">Node JS</label>
+                </div>
+                <div class="col-6">
+                    {{if eq (index .DataEdit.Teknologi 2) "next"}}
+                    <input class="form-check-input" type="checkbox" value="next" name="next" id="next" checked>
+                    {{else}}
+                    <input class="form-check-input" type="checkbox" value="next" name="next" id="next">
+                    {{end}}
+                    <label class="form-check-label ms-3" for="next">Next JS</label>
+                </div>
+                <div class="col-6">
+                    {{if eq (index .DataEdit.Teknologi 3) "typescript"}}
+                    <input class="form-check-input" type="checkbox" value="typescript" name="typescript" id="typescript" checked>
+                    {{else}}
+                    <input class="form-check-input" type="checkbox" value="typescript" name="typescript" id="typescript">
+                    {{end}}
+                    <label class="form-check-label ms-3" for="typescript">Typescript</label>
                 </div>
             </div>
             <div class="mb-3">
                 <label for="formFile" class="form-label fw-semibold">Upload Image</label>
-                <input class="form-control" type="url" id="formFile" name="gambar" placeholder="Url Image : http/ ...">
+                <input class="form-control" type="url" id="formFile" name="gambar" placeholder="Url Image : http/ ..." value="{{.DataEdit.Gambar}}">
             </div>
             <div class="d-grid gap-2">
                 <button class="btn btn-success">Add Project</button>
               </div>
         </form>
     </div>
-    
 </body>
 </html>

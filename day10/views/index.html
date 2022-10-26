@@ -89,21 +89,24 @@
                         <label class="card-text my-2 col-sm-12" style="text-align: justify;">
                             {{$data.Deskripsi}}
                         </label>
-                        {{range $data.Teknologi}}
-                            {{if eq (index $data.Teknologi 0) "react"}}
-                            <a href="#" class="btn text-black fs-5"><i class="fa-brands fa-react"></i></a>
-                            {{else}}{{if eq (index $data.Teknologi 1) "node"}}
-                            <a href="#" class="btn text-black fs-5"><i class="fa-brands fa-node"></i></a>
-                            {{else}}{{if eq (index $data.Teknologi 2) "next"}}
-                            <a href="#" class="btn text-black fs-5"><i class="fa-brands fa-js"></i></a>
-                            {{else}}{{if eq (index $data.Teknologi 3) "typescript"}}
-                            <a href="#" class="btn text-black fs-5"><i class="fa-solid fa-code"></i></a>
-                            {{end}}{{end}}{{end}}{{end}}
+                        {{if eq (index $data.Teknologi 0) "react"}}
+                        <a href="#" class="btn text-black fs-5"><i class="fa-brands fa-react"></i></a>
+                        {{end}}
+                        {{if eq (index $data.Teknologi 1) "node"}}
+                        <a href="#" class="btn text-black fs-5"><i class="fa-brands fa-node"></i></a>
+                        {{end}}
+                        {{if eq (index $data.Teknologi 2) "next"}}
+                        <a href="#" class="btn text-black fs-5"><i class="fa-brands fa-js"></i></a>
+                        {{end}}
+                        {{if eq (index $data.Teknologi 3) "typescript"}}
+                        <a href="#" class="btn text-black fs-5"><i class="fa-solid fa-code"></i></a>
                         {{end}}
                         <label class="align-self-center text-secondary col-sm-12">{{$data.Durasi}}</label>
                         <div class="row align-items-end mt-2">
                             <div class="col d-flex justify-content-end gap-2">
-                                <button type="button" class="btn btn-dark" > Edit</button>
+                                <a href="/Update/{{$data.Id}}">
+                                    <button type="button" class="btn btn-dark" > Edit</button>
+                                </a>
                                 <a href="/Delete/{{$data.Id}}">
                                     <button type="button" class="btn btn-dark" > Delete</button>
                                 </a>

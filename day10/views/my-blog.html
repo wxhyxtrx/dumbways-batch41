@@ -60,16 +60,16 @@
                 </p>
                 <p>
                     <b>Teknologi :</b> <br/>
-                    {{range .BlogView.Teknologi}}
-                        {{if eq (index .BlogView.Teknologi 0) "react"}}
+                    {{range $index, $items := .BlogView.Teknologi}}
+                        {{if eq $items "react"}}
                         <a href="#" class="btn text-black fs-5"><i class="fa-brands fa-react"></i></a>
-                        {{else}}{{if eq (index .BlogView.Teknologi 1) "node"}}
+                        {{else if eq $items "node"}}
                         <a href="#" class="btn text-black fs-5"><i class="fa-brands fa-node"></i></a>
-                        {{else}}{{if eq (index .BlogView.Teknologi 2) "next"}}
+                        {{else if eq $items "next"}}
                         <a href="#" class="btn text-black fs-5"><i class="fa-brands fa-js"></i></a>
-                        {{else}}{{if eq (index .BlogView.Teknologi 3) "typescript"}}
+                        {{else if eq $items "typescript"}}
                         <a href="#" class="btn text-black fs-5"><i class="fa-solid fa-code"></i></a>
-                        {{end}}{{end}}{{end}}{{end}}
+                        {{end}}
                     {{end}}
                 </p>
                 <p>

@@ -28,7 +28,11 @@ func main() {
 
 	route.HandleFunc("/Blog", blog).Methods("Get")
 	route.HandleFunc("/Detail/{id}", detailBlog).Methods("Get")
+
 	route.HandleFunc("/Delete/{id}", deleteBlog).Methods("Get")
+
+	route.HandleFunc("/Update/{id}", pageEdit).Methods("Get")
+	route.HandleFunc("/Update-Blog/{id}", editBlog).Methods("POST")
 
 	route.HandleFunc("/Contact", contact).Methods("Get")
 
@@ -140,35 +144,12 @@ func addProject(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 
-	var inputTitle string
-	var inputStartdate string
-	var inputEnddate string
-	var inputDeskripsi string
-	var inputTehnik []string
-	var inputGambar string
-
-	for i, values := range r.Form {
-		for _, value := range values {
-			if i == "namaproject" {
-				inputTitle = value
-			}
-			if i == "startdate" {
-				inputStartdate = value
-			}
-			if i == "enddate" {
-				inputEnddate = value
-			}
-			if i == "deskripsi" {
-				inputDeskripsi = value
-			}
-			if i == "inputTehnik" {
-				inputTehnik = append(inputTehnik, value)
-			}
-			if i == "gambar" {
-				inputGambar = value
-			}
-		}
-	}
+	var inputTitle = r.PostForm.Get("namaproject")
+	var inputStartdate = r.PostForm.Get("startdate")
+	var inputEnddate = r.PostForm.Get("enddate")
+	var inputDeskripsi = r.PostForm.Get("deskripsi")
+	var inputTehnik = []string{r.PostForm.Get("react"), r.PostForm.Get("node"), r.PostForm.Get("next"), r.PostForm.Get("typescript")}
+	var inputGambar = r.PostForm.Get("gambar")
 	_, err = connection.Conn.Exec(context.Background(), "insert into project(nm_project,start_date,end_date,deskripsi,teknologi, gambar) values ($1,$2,$3,$4,$5,$6)", inputTitle, inputStartdate, inputEnddate, inputDeskripsi, inputTehnik, inputGambar)
 
 	if err != nil {
@@ -178,7 +159,6 @@ func addProject(w http.ResponseWriter, r *http.Request) {
 	}
 	http.Redirect(w, r, "/Project", http.StatusMovedPermanently)
 }
-
 func blog(w http.ResponseWriter, r *http.Request) {
 
 	//bagian tampilan
@@ -273,4 +253,68 @@ func deleteBlog(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	http.Redirect(w, r, "/Blog", http.StatusFound)
+}
+func pageEdit(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "Text/html; charset=utf-8")
+
+	tmpl, err := template.ParseFiles("views/update-project.html")
+
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("Message : " + err.Error()))
+		return
+	} else {
+		id, _ := strconv.Atoi(mux.Vars(r)["id"])
+		updateData := ValueBlog{}
+
+		err = connection.Conn.QueryRow(context.Background(), "SELECT kd_project, nm_project, start_date, end_date, deskripsi, teknologi, gambar, post_at FROM project WHERE kd_project=$1", id).Scan(&updateData.Id, &updateData.Title, &updateData.start_date, &updateData.end_date, &updateData.Deskripsi, &updateData.Teknologi, &updateData.Gambar, &updateData.postat)
+
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte("Message :" + err.Error()))
+			return
+		}
+		updateData = ValueBlog{
+			Id:               updateData.Id,
+			Title:            updateData.Title,
+			Deskripsi:        updateData.Deskripsi,
+			Format_startdate: updateData.start_date.Format("2006-01-02"),
+			Format_enddate:   updateData.end_date.Format("2006-01-02"),
+			Teknologi:        updateData.Teknologi,
+			Gambar:           updateData.Gambar,
+		}
+		respData := map[string]interface{}{
+			"DataEdit": updateData,
+		}
+		w.WriteHeader(http.StatusOK)
+		tmpl.Execute(w, respData)
+	}
+}
+func editBlog(w http.ResponseWriter, r *http.Request) {
+	err := r.ParseForm()
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	id, _ := strconv.Atoi(mux.Vars(r)["id"])
+	inputTitle := r.PostForm.Get("namaproject")
+	inputStartdate := r.PostForm.Get("startdate")
+	inputEnddate := r.PostForm.Get("enddate")
+	inputDeskripsi := r.PostForm.Get("deskripsi")
+	inputTehnik := []string{r.PostForm.Get("react"), r.PostForm.Get("node"), r.PostForm.Get("next"), r.PostForm.Get("typescript")}
+	inputGambar := r.PostForm.Get("gambar")
+
+	// UPDATE PROJECT TO POSTGRESQL
+	_, err = connection.Conn.Exec(context.Background(), `UPDATE project
+		SET "nm_project"=$1, "start_date"=$2, "end_date"=$3, "deskripsi"=$4, "teknologi"=$5, "gambar"=$6
+		WHERE "kd_project"=$7`, inputTitle, inputStartdate, inputEnddate, inputDeskripsi, inputTehnik, inputGambar, id)
+	// ERROR HANDLING INSERT PROJECT TO POSTGRESQL
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("message : " + err.Error()))
+		return
+	}
+	http.Redirect(w, r, "/", http.StatusMovedPermanently)
+
 }
