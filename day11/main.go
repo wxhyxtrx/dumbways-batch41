@@ -2,15 +2,18 @@ package main
 
 import (
 	"context"
-	"day10/connection"
+	"day11/connection"
 	"fmt"
 	"html/template"
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/gorilla/mux"
+	"github.com/gorilla/sessions"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func main() {
@@ -36,6 +39,14 @@ func main() {
 
 	route.HandleFunc("/Contact", contact).Methods("Get")
 
+	route.HandleFunc("/register", pageRegister).Methods("Get")
+	route.HandleFunc("/registered", register).Methods("Post")
+
+	route.HandleFunc("/login", pageLogin).Methods("Get")
+	route.HandleFunc("/log-in", login).Methods("POST")
+
+	route.HandleFunc("/Logout", logout).Methods("Get")
+
 	route.HandleFunc("/Error", page404).Methods("Get")
 
 	fmt.Println("Sever Running on Port 5000")
@@ -52,12 +63,28 @@ type ValueBlog struct {
 	Deskripsi        string
 	Teknologi        []string
 	Gambar           string
-	Penulis          string
+	IdUser           string
 	postat           time.Time
 	Durasi           string
 }
 
-var Blog = []ValueBlog{}
+type User struct {
+	Id       int
+	Name     string
+	Email    string
+	Password string
+}
+
+var Data = MetaData{}
+
+type MetaData struct {
+	Title     string
+	isLogin   bool
+	Username  string
+	FlashData string
+}
+
+// var Blog = []ValueBlog{}
 
 func home(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
@@ -68,6 +95,29 @@ func home(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Message :" + err.Error()))
 		return
 	}
+
+	// SESSION
+	var store = sessions.NewCookieStore([]byte("SESSION_KEY"))
+	session, _ := store.Get(r, "SESSION_KEY")
+
+	if session.Values["isLogin"] != true {
+		Data.isLogin = false
+	} else {
+		Data.isLogin = session.Values["isLogin"].(bool)
+		Data.Username = session.Values["Name"].(string)
+	}
+	fm := session.Flashes("message")
+
+	var flashes []string
+
+	if len(fm) > 0 {
+		session.Save(r, w)
+		for _, fl := range fm {
+			flashes = append(flashes, fl.(string))
+		}
+	}
+	fmt.Println(flashes)
+	Data.FlashData = strings.Join(flashes, "")
 
 	query := "SELECT kd_project, nm_project, start_date, end_date, deskripsi, teknologi, gambar,post_at FROM project "
 	rows, _ := connection.Conn.Query(context.Background(), query)
@@ -81,7 +131,7 @@ func home(w http.ResponseWriter, r *http.Request) {
 			fmt.Println(err.Error())
 			return
 		}
-		each.Penulis = "Siapa Aja Dah"
+		each.IdUser = "Siapa Aja Dah"
 		each.Durasi = each.postat.Format("2 January 2006")
 
 		each.Format_startdate = each.start_date.Format("2 January 2006")
@@ -94,6 +144,7 @@ func home(w http.ResponseWriter, r *http.Request) {
 
 	respData := map[string]interface{}{
 		"Project": result,
+		"Data":    Data,
 	}
 
 	w.WriteHeader(http.StatusOK)
@@ -188,7 +239,7 @@ func blog(w http.ResponseWriter, r *http.Request) {
 			fmt.Println(err.Error())
 			return
 		}
-		each.Penulis = "Penulisnya aku"
+		each.IdUser = "Penulisnya aku"
 		// each.Gambar = "https://media.sproutsocial.com/uploads/2017/02/10x-featured-social-media-image-size.png"
 		each.Durasi = "1 menit yang lalu"
 
@@ -233,7 +284,7 @@ func detailBlog(w http.ResponseWriter, r *http.Request) {
 	DataBlog.Format_enddate = DataBlog.end_date.Format("2 January 2006")
 	DataBlog.Durasi = DataBlog.postat.Format("2 January 2006")
 
-	DataBlog.Penulis = "Wahyu Tricahyo"
+	DataBlog.IdUser = "Wahyu Tricahyo"
 
 	fmt.Println(DataBlog.Deskripsi)
 
@@ -322,4 +373,118 @@ func editBlog(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	http.Redirect(w, r, "/", http.StatusMovedPermanently)
+}
+func pageRegister(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	tmpl, err := template.ParseFiles("views/register.html")
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("message : " + err.Error()))
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	tmpl.Execute(w, nil)
+}
+func register(w http.ResponseWriter, r *http.Request) {
+	err := r.ParseForm()
+	if err != nil {
+		log.Fatal(err)
+	}
+	usernamae := r.PostForm.Get("username")
+	email := r.PostForm.Get("email")
+	password := r.PostForm.Get("password")
+
+	passwordhash, _ := bcrypt.GenerateFromPassword([]byte(password), 4)
+	_, err = connection.Conn.Exec(context.Background(), "INSERT INTO tb_user(username, email, password) VALUES($1,$2,$3)", usernamae, email, passwordhash)
+
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("message : " + err.Error()))
+		return
+	}
+	http.Redirect(w, r, "/login", http.StatusMovedPermanently)
+}
+func pageLogin(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+
+	tmpl, err := template.ParseFiles("views/login.html")
+
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("Message : " + err.Error()))
+		return
+	}
+	var store = sessions.NewCookieStore([]byte("SESSION_KEY"))
+	session, _ := store.Get(r, "SESSION_KEY")
+
+	fm := session.Flashes("message")
+
+	var flashes []string
+
+	if len(fm) > 0 {
+		session.Save(r, w)
+		for _, fl := range fm {
+			flashes = append(flashes, fl.(string))
+		}
+	}
+	Data.FlashData = strings.Join(flashes, "")
+	respData := map[string]interface{}{
+		"Login": Data,
+	}
+	w.WriteHeader(http.StatusOK)
+	tmpl.Execute(w, respData)
+}
+
+func login(w http.ResponseWriter, r *http.Request) {
+
+	err := r.ParseForm()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var email = r.PostForm.Get("email")
+	var password = r.PostForm.Get("password")
+
+	var dataUser = User{}
+
+	err = connection.Conn.QueryRow(context.Background(), "SELECT * FROM tb_user WHERE email=$1", email).Scan(
+		&dataUser.Id, &dataUser.Name, &dataUser.Email, &dataUser.Password,
+	)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("Message : " + err.Error()))
+		return
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(dataUser.Password), []byte(password))
+	if err != nil {
+		store := sessions.NewCookieStore([]byte("SESSION_KEY"))
+		session, _ := store.Get(r, "SESSION_KEY")
+		session.AddFlash("Password Salah", "message")
+		session.Save(r, w)
+		http.Redirect(w, r, "/login", http.StatusMovedPermanently)
+		return
+	}
+
+	store := sessions.NewCookieStore([]byte("SESSION_KEY"))
+	session, _ := store.Get(r, "SESSION_KEY")
+
+	session.Values["isLogin"] = true
+	session.Values["Name"] = dataUser.Name
+	session.Options.MaxAge = 10800
+
+	session.AddFlash("Succesfully Login!", "message")
+
+	session.Save(r, w)
+
+	http.Redirect(w, r, "/", http.StatusMovedPermanently)
+}
+func logout(w http.ResponseWriter, r *http.Request) {
+	var store = sessions.NewCookieStore([]byte("SESSION_KEY"))
+	session, _ := store.Get(r, "SESSION_KEY")
+
+	session.Options.MaxAge = -1
+	session.Save(r, w)
+
+	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
