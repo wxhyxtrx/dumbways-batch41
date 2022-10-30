@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Dumbways | Week 2</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel="icon" href="https://www.filepicker.io/api/file/mWcP190oTCqiAo5VjrE8">
+    <link rel='stylesheet' type='text/css' media='screen' href='https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css'>
+    <script src="https://kit.fontawesome.com/65863407c7.js" crossorigin="anonymous"></script>
+    <script src='https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js'></script>
+    <style>
+        body{
+            background-color: #e9ecef;
+        }
+        .active{
+            font-weight: bolder;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg bg-white">
+        <div class="container-fluid">
+            <a class="navbar-brand d-inline-midle" href="#">
+                <img src="https://www.filepicker.io/api/file/mWcP190oTCqiAo5VjrE8" alt="Logo" width="30" height="24"
+                    class="d-inline-block align-text-top">
+                Batch 41
+            </a>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link " aria-current="page" href="/">Home</a>
+                    </li>
+                    {{if .Data.IsLogin}}
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/Project">Project</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link " href="/Blog">Blog</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link " href="/contact">Contact</a>
+                    </li>
+                    {{end}}
+                </ul>
+            </div>
+            <div class="justify-content-end navbar-collapse">
+                {{if .Data.IsLogin}}
+                <label class="mx-5">Hello {{.Data.Username}} !</label>
+                <a href="/Logout">
+                    <button type="button" class="btn btn-danger">Log Out</button>
+                </a>
+                {{else}}
+                <a href="/register">
+                    <button type="button" class="btn btn-dark mx-2">Register</button>
+                </a>
+                <a href="/login">
+                    <button type="button" class="btn btn-dark mx-2">Login</button>
+                </a>
+                {{end}}
+
+            </div>
+        </div>
+    </nav>
+    <div class="container mt-5 mb-5 d-flex justify-content-center">
+        <form class="w-75 bg-white rounded shadow-lg p-4" method="POST" action="/Update-Blog/{{.DataEdit.Id}}" enctype="multipart/form-data">
+            <h4 class="text-center">Update Project</h4>
+            <div class="mb-3">
+                <label for="name" class="form-label fw-semibold">Name Project</label>
+                <input type="text" class="form-control" id="name" placeholder="Android Project" name="namaproject" value="{{.DataEdit.Title}}">
+            </div>
+            <div class="row mb-3">
+                <div class="col">
+                    <label for="name" class="form-label fw-semibold">Start Date</label>
+                    <input type="date" class="form-control" id="name" placeholder="Android Project" name="startdate" value="{{.DataEdit.Format_startdate}}">
+                </div>
+                <div class="col">
+                    <label for="name" class="form-label fw-semibold">End Date</label>
+                    <input type="date" class="form-control" id="name" placeholder="Android Project" name="enddate" value="{{.DataEdit.Format_enddate}}">
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="exampleFormControlTextarea1" class="form-label fw-semibold">Description</label>
+                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="deskripsi" >{{.DataEdit.Deskripsi}}</textarea>
+            </div>
+            <div class="mb-3 row">
+                <label class="form-label fw-semibold col-sm-12">Technology</label>
+                <div class="col-6">
+                    {{if eq (index .DataEdit.Teknologi 0) "react"}}
+                    <input class="form-check-input" type="checkbox" value="react" name="react" id="react" checked>
+                    {{else}}
+                    <input class="form-check-input" type="checkbox" value="react" name="react" id="react">
+                    {{end}}
+                    <label class="form-check-label ms-3" for="react">React JS</label>
+                </div>
+                <div class="col-6">
+                    {{if eq (index .DataEdit.Teknologi 1) "node"}}
+                    <input class="form-check-input" type="checkbox" value="node" name="node" id="node" checked>
+                    {{else}}
+                    <input class="form-check-input" type="checkbox" value="node" name="node" id="node">
+                    {{end}}
+                    <label class="form-check-label ms-3" for="node">Node JS</label>
+                </div>
+                <div class="col-6">
+                    {{if eq (index .DataEdit.Teknologi 2) "next"}}
+                    <input class="form-check-input" type="checkbox" value="next" name="next" id="next" checked>
+                    {{else}}
+                    <input class="form-check-input" type="checkbox" value="next" name="next" id="next">
+                    {{end}}
+                    <label class="form-check-label ms-3" for="next">Next JS</label>
+                </div>
+                <div class="col-6">
+                    {{if eq (index .DataEdit.Teknologi 3) "typescript"}}
+                    <input class="form-check-input" type="checkbox" value="typescript" name="typescript" id="typescript" checked>
+                    {{else}}
+                    <input class="form-check-input" type="checkbox" value="typescript" name="typescript" id="typescript">
+                    {{end}}
+                    <label class="form-check-label ms-3" for="typescript">Typescript</label>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="formFile" class="form-label fw-semibold">Upload Image</label>
+                <input class="form-control" type="file" id="formFile" name="gambar" placeholder="Url Image : http/ ..." value="{{.DataEdit.Gambar}}">
+            </div>
+            <div class="d-grid gap-2">
+                <button class="btn btn-success">Add Project</button>
+              </div>
+        </form>
+    </div>
+</body>
+</html>
